@@ -1,0 +1,13 @@
+#call the layer in the map
+
+project = QgsProject.instance()
+
+name_sampler = project.mapLayersByName('name_sampler')[0]
+
+print (name_sampler.isValid())
+
+#check the attributes in a file 
+
+for i in name_sampler.getFeatures():
+    print(i.attributes())
+    
