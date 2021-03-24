@@ -1,0 +1,12 @@
+#Upload a shapefile in Qgis:
+
+path_to_name_sampler_layer = r"D:\name_sampler.shp"
+
+# The format is:
+# vlayer = QgsVectorLayer(data_source, layer_name, provider_name)
+
+vlayer = QgsVectorLayer(path_to_name_sampler_layer, "name_sampler", "ogr")
+if not vlayer.isValid():
+    print("Layer failed to load!")
+else:
+    QgsProject.instance().addMapLayer(vlayer)
