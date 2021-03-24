@@ -1,0 +1,40 @@
+@author: sonny
+"""
+#Upload the shapfile to buffer in Qgis:
+
+path_to_name_sampler_layer = r"D:\name_sampler.shp"
+
+# The format is:
+# vlayer = QgsVectorLayer(data_source, layer_name, provider_name)
+
+vlayer = QgsVectorLayer(path_to_name_sampler_layer, "name_sampler", "ogr")
+if not vlayer.isValid():
+    print("Layer failed to load!")
+else:
+    QgsProject.instance().addMapLayer(vlayer)
+    
+#start buffering process
+
+layerName = 'name_sampler' #input buffer layer, to add the name only
+outFn = r"D:\name_sampler_buffer.shp" #directory and name of the output shapefile
+bufferDist = 10 #input lenght parameter, in meters if your reference sistem is on WGS 84 
+
+layer = QgsProject.instance().mapLayersByName('name_sampler')[0] #insert input layer name
+layer = layer
+fields = layer.fields ()
+feats = layer.getFeatures ()
+
+writer = QgsVectorFileWriter (outFn, 'UTF-8', fields, QgsWkbTypes.Polygon, layer.sourceCrs(),'ESRI shapefile') 
+#typology of layer to write
+
+for feat in feats:
+    geom = feat.geometry ()
+    buff = geom.buffer (bufferDist, 5) #insert a default bufferdistance
+    feat.setGeometry (buff)
+    writer.addFeature(feat)
+    
+iface.addVectorLayer(outFn, '', 'ogr')
+del(writer)
+print ("Buffer Done")
+
+#The result is a buffer with a cartesian representation
