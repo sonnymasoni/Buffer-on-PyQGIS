@@ -1,0 +1,25 @@
+#Calculate $area of a layer with the field calculator in pyqgis
+
+layer = QgsProject.instance().mapLayersByName('name_sampler')[0]
+pv = layer.dataProvider()
+pv.addAttributes([QgsField('area', QVariant.Double)])
+
+layer.updateFields()
+
+#Add the expression of the field calculator
+
+expression1 = QgsExpression ('$area')
+
+context = QgsExpressionContext ()
+context.appendScopes(QgsExpressionContextUtils.globalProjectLayerScopes(layer))
+
+with edit (layer):
+   for f in layer.getFeatures ():
+       context.setFeature(f)
+       f['area'] = expression1.evaluate(context)
+       layer.updateFeature(f)
+       
+#check in the attributes
+
+for i in name_sampler():
+    print (i.attributes ())
